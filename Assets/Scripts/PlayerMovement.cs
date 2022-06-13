@@ -12,7 +12,7 @@ public class PlayerMovement : MonoBehaviour
 	
 	public float crouchingHeight =1.25f;
 	public float standingHeight =1.8f;
-	bool isCrouching = false;
+	public bool isCrouching = false;
 	public float crouchingMultiplier;
     
 	public float speed=9f;
@@ -26,6 +26,7 @@ public class PlayerMovement : MonoBehaviour
 	Vector3 velocity;
 	bool isGrounded;
 	
+	public bool isWalking=false;
     
 	// Start is called before the first frame update
 	void Start()
@@ -55,13 +56,11 @@ public class PlayerMovement : MonoBehaviour
 		if(Input.GetButtonDown("Jump") && isGrounded)
 		{
 			velocity.y=Mathf.Sqrt(jumpHeight*-2f*gravity);
-			Debug.Log("Jumping");
 		}
 		
 		if(Input.GetKey(KeyCode.LeftShift) && isCrouching==false)
 		{
 			isSprinting=true;
-			Debug.Log("Shifting");
 		}
 		else
 		{
@@ -97,6 +96,13 @@ public class PlayerMovement : MonoBehaviour
 		else
 		{
 			controller.height = standingHeight;
+		}
+		
+		if (move.x!=0||move.z!=0){
+			isWalking=true;
+		}
+		else{
+			isWalking =false;
 		}
 		
 		controller.Move(move * speed * Time.deltaTime);
