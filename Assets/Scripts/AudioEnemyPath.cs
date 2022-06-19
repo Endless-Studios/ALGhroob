@@ -11,7 +11,7 @@ public class AudioEnemyPath : MonoBehaviour
 	public GameObject thePlayer;
 	public SoundCalculation sound;
 	public bool enemyTriggered;
-	public int timer =50;
+	public int timer =10;
 
 	
 	
@@ -43,7 +43,7 @@ public class AudioEnemyPath : MonoBehaviour
 				enemy.SetDestination(thePlayer.transform.position);
 			}
 			else{
-				timer=50;
+				timer=10;
 				enemyTriggered=false;
 			}
 			
