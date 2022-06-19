@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class SoundCalculation : MonoBehaviour
 {
+
 	public float noiseLevel;
 	public float soundEmitted=0;
 	
@@ -12,6 +13,7 @@ public class SoundCalculation : MonoBehaviour
 	
 	public PlayerMovement player;
 	public GameObject enemy;
+    public AudioSource beep;
 	
 	public float sound = 1;
 	public float crouching = 2;
@@ -20,6 +22,8 @@ public class SoundCalculation : MonoBehaviour
 	
 	public float grassMult=2;
 	public float woodMult=3;
+    
+    public int beepCount;
 	
 	float distance;
 	
@@ -28,6 +32,7 @@ public class SoundCalculation : MonoBehaviour
     void Start()
     {
 	    sound=1;
+        beepCount=0;
     }
 
     // Update is called once per frame
@@ -61,8 +66,23 @@ public class SoundCalculation : MonoBehaviour
 		}
 		
 		soundEmitted=calcSoundEmitted();
-		Debug.Log(soundEmitted);
+		Debug.Log(distance);
         
+        if(!beep.isPlaying)
+        {
+            if(distance<2){
+                beep.Play();
+                beepCount+=1;
+            }
+        }
+        
+        else
+        {
+            
+        
+        }
+        
+                
 	}
     
 	float calcSoundEmitted(){
