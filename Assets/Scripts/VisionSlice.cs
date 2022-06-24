@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-
 [ExecuteInEditMode]
 public class VisionSlice : MonoBehaviour
 {
@@ -13,7 +12,10 @@ public class VisionSlice : MonoBehaviour
 	public Color line = Color.red;
 	public int raycastFreq = 25; //4 times a second
 	public LayerMask bodypart;
+	public LayerMask blockades;
 	public List<GameObject> detections = new List<GameObject>();
+	
+	public static bool found = false;
 	
 	Collider[] colliders = new Collider[50];
 	Mesh mesh;
@@ -24,7 +26,7 @@ public class VisionSlice : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-	    scanInterval = 1.0f/ scanTimer;
+	    scanInterval = 1.0f/ raycastFreq;
     }
 
     // Update is called once per frame
@@ -40,13 +42,36 @@ public class VisionSlice : MonoBehaviour
 	private void Scan() {
 		count = Physics.OverlapSphereNonAlloc(transform.position, distance, colliders, bodypart, QueryTriggerInteraction.Collide);
 		
+		detections.Clear();
 		for (int i = 0; i < count; ++i) {
 			GameObject obj = colliders[i].gameObject;
 			if (IsOnSight(obj)) { detections.Add(obj); Debug.Log("found something called");}
 		}
+		
+		if (detections.Count > 4) {
+			found = true;
+		}
+		
 	}
 	
 	public bool IsOnSight(GameObject obj) {
+		
+		Vector3 origin = transform.position;
+		Vector3 dest = obj.transform.position;
+		Vector3 direction = dest - origin;
+		
+		if (direction.y < 0 || direction.y > height) {
+			return false;
+		}
+		
+		direction.y = 0;
+		
+		float deltaAngle = Vector3.Angle(direction, transform.forward);
+		if (deltaAngle > angle) return false;
+		
+		origin.y += height/2;
+		dest.y = origin.y;
+		if (Physics.Linecast(origin, dest, blockades)) return false;
 		
 		return true;
 	}
@@ -54,8 +79,10 @@ public class VisionSlice : MonoBehaviour
 	Mesh VisionWedge() {
 		Mesh mesh = new Mesh();
 		
-		int Triangles = 8;
+		int segments = 10;
+		int Triangles = (segments * 4) + 2 + 2;
 		int Vertices = Triangles * 3;
+		
 		
 		Vector3[] vert = new Vector3[Vertices]; //
 		int[] tri = new int[Vertices];
@@ -71,28 +98,51 @@ public class VisionSlice : MonoBehaviour
 		int v = 0; //
 		
 		vert[v++] = bottom;
+		vert[v++] = bleft;
+		vert[v++] = tleft;
+		
+		vert[v++] = tleft;
 		vert[v++] = top;
-		vert[v++] = tright;
+		vert[v++] = bottom;
+		
+		vert[v++] = bottom;
+		vert[v++] = top;
+		vert[v++] = tright;    
 		
 		vert[v++] = tright;
 		vert[v++] = bright;
 		vert[v++] = bottom;
 		
-		vert[v++] = bleft;
-		vert[v++] = bright;
-		vert[v++] = tright;    //i should comment all of these later so i understand what is going on
+		float currentAngle = -angle;
+		float deltaAngle = (angle * 2) / segments;
+		for (int i = 0; i < segments; ++i) {
+
+			bleft = Quaternion.Euler(0, currentAngle, 0) * Vector3.forward * distance;
+			bright = Quaternion.Euler(0, currentAngle + deltaAngle, 0) * Vector3.forward * distance;
 		
-		vert[v++] = tright;
-		vert[v++] = tleft;
-		vert[v++] = bleft;
+			tleft = bleft + Vector3.up * height;
+			tright = bright + Vector3.up * height;
+			
+			vert[v++] = bleft;
+			vert[v++] = bright;
+			vert[v++] = tright; //each one represents a triangle
 		
-		vert[v++] = top;
-		vert[v++] = tleft;
-		vert[v++] = tright;
+			vert[v++] = tright;
+			vert[v++] = tleft;
+			vert[v++] = bleft;
 		
-		vert[v++] = bottom;
-		vert[v++] = bright;
-		vert[v++] = bleft;
+			vert[v++] = top;
+			vert[v++] = tleft;
+			vert[v++] = tright;
+		
+			vert[v++] = bottom;
+			vert[v++] = bright;
+			vert[v++] = bleft;
+		
+			
+			currentAngle += deltaAngle;
+		}
+		
 		
 		for (int i = 0; i < v; ++i) {
 			tri[i] = i;
@@ -109,6 +159,7 @@ public class VisionSlice : MonoBehaviour
 	
 	private void OnValidate() {
 		mesh = VisionWedge();
+		scanInterval = 1.0f/ scanTimer;
 	}
 	
 	private void OnDrawGizmos() {
@@ -116,6 +167,13 @@ public class VisionSlice : MonoBehaviour
 			Gizmos.color = line;
 			Gizmos.DrawMesh(mesh, transform.position, transform.rotation);
 		}
+		
+		Gizmos.DrawWireSphere(transform.position, distance);
+		for (int i = 0 ; i < count; ++i) {
+			Gizmos.DrawSphere(colliders[i].transform.position, 0.1f);
+		}
+		
+		//foreach (var obj in Object)
 	}
 	
     
