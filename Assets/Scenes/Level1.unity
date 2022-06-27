@@ -1566,7 +1566,7 @@ MonoBehaviour:
   distance: 29.78
   angle: 51.55
   height: 1.01
-  line: {r: 1, g: 0, b: 0, a: 0.6}
+  line: {r: 1, g: 0, b: 0, a: 0.4392157}
   raycastFreq: 25
   bodypart:
     serializedVersion: 2
