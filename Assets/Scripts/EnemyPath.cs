@@ -12,10 +12,9 @@ public class EnemyPath : MonoBehaviour
 	public static bool canSpin;
 	public GameObject thePlayer;
 	public bool on = false;
-	public bool found = false;
+	public bool found;
 	public AudioSource chaser;
 	public bool isPlaying = false;
-	
 	
     // Start is called before the first frame update
     void Start()
@@ -31,7 +30,10 @@ public class EnemyPath : MonoBehaviour
     void Update()
 	{
 		
+		found = VisionSlice.found;
 		//enemy.SetDestination(destination1.transform.position);
+		
+		
 		
 		if (Input.GetMouseButtonDown(1))
 		{
@@ -64,7 +66,7 @@ public class EnemyPath : MonoBehaviour
 		
 	}
     
-	void OnTriggerEnter(Collider other) {
+	/*	void OnTriggerEnter(Collider other) {
 		
 		if (other.tag == "Player") {
 		if(on)
@@ -99,6 +101,6 @@ public class EnemyPath : MonoBehaviour
 		//enemy.SetDestination(destination1.transform.position);
 		
 		
-	}
+	} */
     
 }
