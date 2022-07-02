@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6974226150507227597}
   m_Layer: 0
   m_Name: PlayerScent
-  m_TagString: Untagged
+  m_TagString: Scent
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -45,6 +45,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43caea99e0c328840863653c36d5a96c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemy: {fileID: 4928973181776197586, guid: 11a61c4326d1c0445b25393c827ac323, type: 3}
+  airspeed: 0.1
 --- !u!135 &6974226150507227597
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -131,7 +133,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 0}
+  - {fileID: 2100000, guid: 8045760f4d543ce40a7225b69e205be2, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

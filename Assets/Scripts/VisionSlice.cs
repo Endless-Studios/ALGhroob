@@ -37,6 +37,17 @@ public class VisionSlice : MonoBehaviour
 	    	scanTimer+= scanInterval;
 	    	Scan();
 	    }
+	    
+	    if (Input.GetMouseButtonDown(1)) {
+	    	distance = 20f;
+	    	angle = 60;
+	    	Debug.Log("FlashLight on");
+	    }
+	    
+	    else {
+		    distance = 10f;
+		    angle = 35;
+	    }
     }
     
 	private void Scan() {
